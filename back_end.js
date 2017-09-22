@@ -12,16 +12,48 @@ $(document).ready(function(){
 //    index--;
 
   
+  
+  const $tweetBody = $('.tweets');
+  const $tweet = $('<div></div>');
+  let initialTweetCount = streams.home.length;
+  
   const tweetHandlers = {
   
     tweetCount: function() {return streams.home.length;},
 
-    displayTweet: function() {
-      const tweet = streams.home[0];
-      const $tweet = $('<div></div>');
+    displayTweet: function(index) {
+      const tweet = streams.home[index];
       $tweet.text('@' + tweet.user + ': ' + tweet.message + ' ' + tweet.created_at.toLocaleTimeString());
-      $tweet.appendTo($('.tweets'))
+      $tweet.appendTo($tweetBody);
+    },
+    
+    checkForNewTweets: function() {
+      let newTweetCount = this.tweetCount();
+      if (newTweetCount > initialTweetCount) {
+        $tweet.text('you have ' + newTweetCount - initialTweetCount + ' new tweets.').prependTo($tweetBody);
+      }
+      
+      setTimeout(function() {
+        checkForNewTweets();
+      }, 5000);
+    }
+    
+  }
+  
+  
+  function displayInitialTweets() {
+    let index = streams.home.length - 1;
+    while(index >= 0) {
+      tweetHandlers.displayTweet(index);
+      index--;
     }
   }
+  
+  displayInitialTweets();
+  
+  
+
+
 })
+
 
