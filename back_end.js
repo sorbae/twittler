@@ -2,27 +2,19 @@ $(document).ready(function(){
 //  const $body = $('body');
 //  const $tweetBody = $('body.div.tweets');
 //  $body.html('');
-  
-//  let index = streams.home.length - 1;
-//  while(index >= 0){
-//    const tweet = streams.home[index];
-//    const $tweet = $('<div></div>');
-//    $tweet.text('@' + tweet.user + ': ' + tweet.message + ' ' + tweet.created_at.toLocaleTimeString());
-//    $tweet.appendTo($body);
-//    index--;
+//  
 
-  
-  
+   
   const $tweetBody = $('.tweets');
-  const $tweet = $('<div></div>');
   let initialTweetCount = streams.home.length;
   
-  const tweetHandlers = {
+  const tweetEvents = {
   
     tweetCount: function() {return streams.home.length;},
 
     displayTweet: function(index) {
       const tweet = streams.home[index];
+      const $tweet = $('<div></div>');
       $tweet.text('@' + tweet.user + ': ' + tweet.message + ' ' + tweet.created_at.toLocaleTimeString());
       $tweet.appendTo($tweetBody);
     },
@@ -38,13 +30,24 @@ $(document).ready(function(){
       }, 5000);
     }
     
+
+  }
+  
+  const tweetHandlers = {
+    
+    //if button pressed --> displayNewTweets
+    displayNewTweets: function() {
+      //current feed length --> original feed length
+        //displayTweet
+    }
+    
   }
   
   
   function displayInitialTweets() {
-    let index = streams.home.length - 1;
+    let index = initialTweetCount - 1;
     while(index >= 0) {
-      tweetHandlers.displayTweet(index);
+      tweetEvents.displayTweet(index);
       index--;
     }
   }
