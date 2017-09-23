@@ -20,9 +20,10 @@ $(document).ready(function(){
     },
     
     checkForNewTweets: function() {
-      let newTweetCount = this.tweetCount();
+      let newTweetCount = tweetEvents.tweetCount();
+      const tweetMessage = $('<div></div>');
       if (newTweetCount > initialTweetCount) {
-        $tweet.text('you have ' + newTweetCount - initialTweetCount + ' new tweets.').prependTo($tweetBody);
+        tweetMessage.text('you have ' + (newTweetCount - initialTweetCount) + ' new tweets.').prependTo($tweetBody);
       }
       
       setTimeout(function() {
