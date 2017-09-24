@@ -1,62 +1,64 @@
 $(document).ready(function(){
 //  const $body = $('body');
-//  const $tweetBody = $('body.div.tweets');
-//  $body.html('');
-//  
 
-   
-  const $tweetBody = $('.tweets');
+  const $tweetContainer = $('.container.tweets');
   let initialTweetCount = streams.home.length;
   
-  const tweetEvents = {
-  
-    tweetCount: function() {return streams.home.length;},
 
-    displayTweet: function(index) {
-      const tweet = streams.home[index];
-      const $tweet = $('<div></div>');
+  const tweetEvents = {
+    
+    displayIndividualTweet: function(index) {
+      let tweet = streams.home[index];
+      let $tweet = $('<div></div>');
       $tweet.text('@' + tweet.user + ': ' + tweet.message + ' ' + tweet.created_at.toLocaleTimeString());
-      $tweet.appendTo($tweetBody);
+      $tweet.prependTo($tweetContainer);
     },
     
-    checkForNewTweets: function() {
-      let newTweetCount = tweetEvents.tweetCount();
-      const tweetMessage = $('<div></div>');
-      if (newTweetCount > initialTweetCount) {
-        tweetMessage.text('you have ' + (newTweetCount - initialTweetCount) + ' new tweets.').prependTo($tweetBody);
+    displayTweets: function(start, end) {
+      while (start < end) {
+        tweetEvents.displayIndividualTweet(start);
+        start++;
       }
-      
-      setTimeout(function() {
-        checkForNewTweets();
-      }, 5000);
+    },
+    
+    countTweets: function() {return streams.home.length},
+    
+    checkNewTweets: function() {
+      let newTweetCount = this.countTweets();
+      if (newTweetCount > initialTweetCount) {
+        let tweetMessage = $('<button></button>');
+        tweetMessage.addClass('notification');
+        tweetMessage.addClass('view-tweets');
+        tweetMessage.text('you have ' + (newTweetCount - initialTweetCount) + ' new tweets').prependTo($tweetContainer);
+      }
     }
     
-
   }
   
   const tweetHandlers = {
     
-    //if button pressed --> displayNewTweets
+    displayInitialTweets: function() {
+      tweetEvents.displayTweets(0, initialTweetCount - 1);
+    },
+    
     displayNewTweets: function() {
-      //current feed length --> original feed length
-        //displayTweet
+      let newTweetCount = tweetEvents.countTweets();
+      tweetEvents.displayTweets(initialTweetCount - 1, newTweetCount);
+      initialTweetCount = newTweetCount;
     }
+    
     
   }
   
+                  
+  tweetHandlers.displayInitialTweets();                  
+  setTimeout(function() {
+    tweetEvents.checkNewTweets();
+  }, 10000);
+  $(this).on('click', function() {
+    tweetHandlers.displayNewTweets();
+  })
   
-  function displayInitialTweets() {
-    let index = initialTweetCount - 1;
-    while(index >= 0) {
-      tweetEvents.displayTweet(index);
-      index--;
-    }
-  }
-  
-  displayInitialTweets();
-  
-  
-
 
 })
 
