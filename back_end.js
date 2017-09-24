@@ -2,6 +2,7 @@ $(document).ready(function(){
 //  const $body = $('body');
 
   const $tweetContainer = $('.container.tweets');
+  const $notificationContainer = $('.container.notification');
   let initialTweetCount = streams.home.length;
   
 
@@ -23,14 +24,19 @@ $(document).ready(function(){
     
     countTweets: function() {return streams.home.length},
     
+    notificationForNewTweets: function(newTweetCount) {
+      let tweetMessage = $('<button id="view-tweets"></button>');
+      tweetMessage.text('you have ' + (newTweetCount - initialTweetCount) + ' new tweets').prependTo($notificationContainer);
+    },
+    
     checkNewTweets: function() {
       let newTweetCount = this.countTweets();
       if (newTweetCount > initialTweetCount) {
-        let tweetMessage = $('<button></button>');
-        tweetMessage.addClass('notification');
-        tweetMessage.addClass('view-tweets');
-        tweetMessage.text('you have ' + (newTweetCount - initialTweetCount) + ' new tweets').prependTo($tweetContainer);
+        this.notificationForNewTweets(newTweetCount);
       }
+      setTimeout(function() {
+        this.checkNewTweets();
+      }, 10000)
     }
     
   }
@@ -47,19 +53,22 @@ $(document).ready(function(){
       initialTweetCount = newTweetCount;
     }
     
-    
   }
   
-                  
-  tweetHandlers.displayInitialTweets();                  
-  setTimeout(function() {
-    tweetEvents.checkNewTweets();
-  }, 10000);
-  $(this).on('click', function() {
-    tweetHandlers.displayNewTweets();
-  })
+  
+  window.onload = function init() {
+    tweetHandlers.displayInitialTweets();                  
+    
+    setTimeout(function() {
+      tweetEvents.checkNewTweets();
+    }, 10000);
+  
+    $('.container.notification').on('click', 'button', function() {
+      tweetHandlers.displayNewTweets();
+      $('#view-tweets').remove('button');
+    })
+
+  }
   
 
 })
-
-
