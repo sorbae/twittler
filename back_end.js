@@ -10,7 +10,7 @@ $(document).ready(function(){
     
     displayIndividualTweet: function(index) {
       let tweet = streams.home[index];
-      let $tweet = $('<div></div>');
+      let $tweet = $('<div class="tweets"></div>');
       $tweet.text('@' + tweet.user + ': ' + tweet.message + ' ' + tweet.created_at.toLocaleTimeString());
       $tweet.prependTo($tweetContainer);
     },
@@ -26,17 +26,16 @@ $(document).ready(function(){
     
     notificationForNewTweets: function(newTweetCount) {
       let tweetMessage = $('<button id="view-tweets"></button>');
-      tweetMessage.text('you have ' + (newTweetCount - initialTweetCount) + ' new tweets').prependTo($notificationContainer);
+      tweetMessage.text('you have ' + (newTweetCount - initialTweetCount) + '+ new tweets').prependTo($notificationContainer);
     },
     
     checkNewTweets: function() {
-      let newTweetCount = this.countTweets();
-      if (newTweetCount > initialTweetCount) {
-        this.notificationForNewTweets(newTweetCount);
+      let newTweetCount = tweetEvents.countTweets();
+      let notificationExists = $('.container.notification').children().length > 0;
+      if (newTweetCount > initialTweetCount && !notificationExists) {
+        tweetEvents.notificationForNewTweets(newTweetCount);
       }
-      setTimeout(function() {
-        this.checkNewTweets();
-      }, 10000)
+      setTimeout(tweetEvents.checkNewTweets, 10000)
     }
     
   }
