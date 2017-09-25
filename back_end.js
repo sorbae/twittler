@@ -16,7 +16,7 @@ $(document).ready(function(){
       let $timeSpan = $('<span class="time-span"></span>');
     
       let time = tweet.created_at.toLocaleTimeString();
-      let userLink = $('<a href="#'+ tweet.user + '">@' + tweet.user + '</a>');
+      let userLink = $('<a href="#" class="' + tweet.user + '">@' + tweet.user + '</a>');
       
       $headerSpan.append(userLink);
       $timeSpan.append(time);
@@ -40,6 +40,7 @@ $(document).ready(function(){
       let $tweetHeader = tweetEvents.createTweetHeader(tweet);
       let $tweetBody = tweetEvents.createTweetBody(tweet);
       
+      $tweet.addClass(tweet.user);
       $tweetHeader.appendTo($tweet);
       $tweetBody.appendTo($tweet);
       $tweet.prependTo($allTweetContainer);
@@ -84,9 +85,15 @@ $(document).ready(function(){
     }, 
     
     filterTweetsByUser: function(user) {
-      let userFeed = tweetUsers[user];
-      tweetEvents.displayTweets(userFeed, 0, userFeed.length - 1);
+      let tweets = Array.from($('.container.tweet'));
+      for (let tweet of tweets) {
+        tweet.classList.remove('hide');
+        if (!(tweet.classList.contains(user))) {
+          tweet.classList.add('hide');
+        }
+      }
     }
+
     
   }
   
@@ -101,6 +108,11 @@ $(document).ready(function(){
     $('.container.notification').on('click', 'button', function() {
       tweetHandlers.displayNewTweets();
       $('#view-tweets').remove('button');
+    })
+    
+    $('.container.tweet').on('click', 'a', function() {
+      let user = this.className;
+      tweetHandlers.filterTweetsByUser(user);
     })
 
   }
