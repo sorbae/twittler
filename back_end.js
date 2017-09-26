@@ -12,8 +12,8 @@ $(document).ready(function(){
     
     createTweetHeader: function(tweet) {
       let $tweetHeader = $('<div class="tweet-header"></div>');
-      let $headerSpan = $('<span class="header-span"></span>');
-      let $timeSpan = $('<span class="time-span"></span>');
+      let $headerSpan = $('<span class="header"></span>');
+      let $timeSpan = $('<span class="time"></span>');
     
       let time = tweet.created_at.toLocaleTimeString();
       let userLink = $('<a href="#" class="' + tweet.user + '">@' + tweet.user + '</a>');
@@ -57,7 +57,7 @@ $(document).ready(function(){
     
     notificationForNewTweets: function(newTweetCount) {
       let tweetMessage = $('<button id="view-tweets"></button>');
-      tweetMessage.text('See ' + (newTweetCount - initialTweetCount) + ' new tweets').prependTo($notificationContainer);
+      tweetMessage.text('See more hoots in your feed').prependTo($notificationContainer);
     },
     
     checkNewTweets: function() {
@@ -106,6 +106,7 @@ $(document).ready(function(){
     }, 10000);
   
     $('.container.notification').on('click', 'button', function() {
+      $('.container.tweet').removeClass('hide');
       tweetHandlers.displayNewTweets();
       $('#view-tweets').remove('button');
     })
@@ -113,6 +114,11 @@ $(document).ready(function(){
     $('.container.tweet').on('click', 'a', function() {
       let user = this.className;
       tweetHandlers.filterTweetsByUser(user);
+    })
+    
+    $('nav').on('click', 'img', function() {
+      $('.container.tweet').removeClass('hide');
+      tweetHandlers.displayNewTweets();
     })
 
   }
