@@ -66,7 +66,7 @@ $(document).ready(function(){
       if (newTweetCount > initialTweetCount && !notificationExists) {
         tweetEvents.notificationForNewTweets(newTweetCount);
       }
-      setTimeout(tweetEvents.checkNewTweets, 10000)
+      setTimeout(tweetEvents.checkNewTweets, 15000)
     }
     
   }
@@ -85,7 +85,8 @@ $(document).ready(function(){
     }, 
     
     filterTweetsByUser: function(user) {
-      let tweets = Array.from($('.container.tweet'));
+      let tweets = [];
+      tweets = Array.from($('.container.tweet'));
       for (let tweet of tweets) {
         tweet.classList.remove('hide');
         if (!(tweet.classList.contains(user))) {
@@ -103,7 +104,7 @@ $(document).ready(function(){
     
     setTimeout(function() {
       tweetEvents.checkNewTweets();
-    }, 10000);
+    }, 15000);
   
     $('.container.notification').on('click', 'button', function() {
       $('.container.tweet').removeClass('hide');
@@ -111,8 +112,9 @@ $(document).ready(function(){
       $('#view-tweets').remove('button');
     })
     
-    $('.container.tweet').on('click', 'a', function() {
+    $('.container.tweets').on('click', 'a', function() {
       let user = this.className;
+      alert(user);
       tweetHandlers.filterTweetsByUser(user);
     })
     
