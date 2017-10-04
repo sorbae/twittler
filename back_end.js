@@ -9,6 +9,15 @@ $(document).ready(function(){
   
 
   const tweetEvents = {
+
+    renderUserTweet: function() {
+      let tweet = {};
+      tweet.user = 'you';
+      tweet.message = $('input').val();
+      tweet.created_at = new Date();
+      addTweet(tweet);
+      initialTweetCount = tweetEvents.countTweets();
+    },
     
     createTweetHeader: function(tweet) {
       let $tweetHeader = $('<div class="tweet-header"></div>');
@@ -82,49 +91,65 @@ $(document).ready(function(){
       let newTweetCount = tweetEvents.countTweets();
       tweetEvents.displayTweets(homeFeed, initialTweetCount - 1, newTweetCount);
       initialTweetCount = newTweetCount;
-    }, 
+    },
     
     filterTweetsByUser: function(user) {
-      let tweets = [];
-      tweets = Array.from($('.container.tweet'));
+      let tweets = Array.from($('.container.tweet'));
       for (let tweet of tweets) {
         tweet.classList.remove('hide');
         if (!(tweet.classList.contains(user))) {
           tweet.classList.add('hide');
         }
       }
-    }
-
+    },
     
+    createDefaultUser: function() {
+      streams.users['you'] = [];
+    },
+    
+    refreshTweets: function() {
+      $('.container.tweet').removeClass('hide');
+      $('.container.writeTweet').removeClass('hide');
+      tweetHandlers.displayNewTweets();
+      $('#view-tweets').remove('button');
+    }
   }
   
   
   window.onload = function init() {
-    tweetHandlers.displayInitialTweets();                  
+    
+    tweetHandlers.displayInitialTweets(); 
+    tweetHandlers.createDefaultUser();
     
     setTimeout(function() {
       tweetEvents.checkNewTweets();
     }, 15000);
   
     $('.container.notification').on('click', 'button', function() {
-      $('.container.tweet').removeClass('hide');
-      tweetHandlers.displayNewTweets();
-      $('#view-tweets').remove('button');
+      tweetHandlers.refreshTweets();
     })
     
     $('.container.tweets').on('click', 'a', function() {
       let user = this.className;
-      alert(user);
       tweetHandlers.filterTweetsByUser(user);
+      $('.container.writeTweet').addClass('hide');
     })
     
     $('nav').on('click', 'img', function() {
-      $('.container.tweet').removeClass('hide');
-      tweetHandlers.displayNewTweets();
+      let newTweetCount = tweetEvents.countTweets();
+      if (initialTweetCount !== newTweetCount) {
+        tweetHandlers.refreshTweets();
+      }
     })
-
+    
+    $('.container.writeTweet').on('click', 'button', function() {
+      if ($('input').val()) {
+        tweetEvents.renderUserTweet();
+        tweetHandlers.refreshTweets();
+        $('#tweet-input').val('');
+      }
+    })
+    
   }
-
-
 
 })
